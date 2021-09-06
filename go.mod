@@ -8,7 +8,6 @@ require (
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/go-kit/kit v0.11.0
 	github.com/morikuni/aec v1.0.0 // indirect
-	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
 	google.golang.org/grpc v1.40.0 // indirect
 )
