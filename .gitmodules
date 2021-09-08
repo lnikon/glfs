@@ -1,3 +1,6 @@
 [submodule "glfs"]
 	path = glfs
 	url = git@github.com:lnikon/glfs.git
+[submodule "glfs-api"]
+	path = glfs-api
+	url = git@github.com:lnikon/glfs-api.git
