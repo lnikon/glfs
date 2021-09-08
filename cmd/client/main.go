@@ -6,7 +6,6 @@ import (
 
 	log "github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
-
 	// kitprometheus "github.com/go-kit/kit/metrics/prometheus"
 	// stdprometheus "github.com/prometheus/client_golang/prometheus"
 )
@@ -34,14 +33,22 @@ func main() {
 	// 	Help:      "The result of each count method.",
 	// }, []string{}) // no fields here
 
-	var svc AlgorithmService
+	var algorithmService AlgorithmService
 	algorithmHandler := httptransport.NewServer(
-		makeAlgorithmEndpoint(svc),
+		makeAlgorithmEndpoint(algorithmService),
 		decodeAlgorithmRequest,
 		encodeResponse,
 	)
 
+	var computationService ComputationService
+	getAllComputationsHandler := httptransport.NewServer(
+		makeGetAllComputationsEndpoint(computationService),
+		decodeGetAllComputationsRequest,
+		encodeResponse,
+	)
+
 	http.Handle("/algorithm", algorithmHandler)
-	logger.Log("msg", "HTTP", "addr", ":8090")
-	logger.Log("err", http.ListenAndServe(":8091", nil))
+	http.Handle("/computation", getAllComputationsHandler)
+
+	logger.Log("err", http.ListenAndServe(":8090", nil))
 }

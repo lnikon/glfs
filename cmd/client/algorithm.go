@@ -1,15 +1,15 @@
 package main
 
-type Algorithm string;
+type Algorithm string
 
 const (
 	Kruskal = "kruskal"
-	Prim = "mst"
+	Prim    = "mst"
 )
 
 type AlgorithmService struct {
 }
 
-func (a *AlgorithmService) Algorithm() ([]Algorithm) {
+func (a *AlgorithmService) Algorithm() []Algorithm {
 	return []Algorithm{Kruskal, Prim}
 }
