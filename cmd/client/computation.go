@@ -8,5 +8,5 @@ type ComputationService struct {
 }
 
 func (c *ComputationService) GetAllComputations() []Computation {
-	return []Computation{{algorithm: Kruskal}, {algorithm: Prim}}
+	return []Computation{{algorithm: Kruskal}}
 }

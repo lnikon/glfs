@@ -10,6 +10,10 @@ import (
 	// stdprometheus "github.com/prometheus/client_golang/prometheus"
 )
 
+const (
+	port = "8090"
+)
+
 func main() {
 	logger := log.NewLogfmtLogger(os.Stderr)
 
@@ -50,5 +54,5 @@ func main() {
 	http.Handle("/algorithm", algorithmHandler)
 	http.Handle("/computation", getAllComputationsHandler)
 
-	logger.Log("err", http.ListenAndServe(":8090", nil))
+	logger.Log("err", http.ListenAndServe(":"+port, nil))
 }
