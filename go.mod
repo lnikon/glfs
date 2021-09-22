@@ -1,4 +1,4 @@
-module github.com/lnikon/library-frontend-server
+module github.com/lnikon/glfs
 
 go 1.16
 
@@ -13,4 +13,5 @@ require (
 	k8s.io/api v0.22.1
 	k8s.io/apimachinery v0.22.1
 	k8s.io/client-go v0.22.1
+	github.com/lnikon/glfs/cmd/server v1.0.0
 )
