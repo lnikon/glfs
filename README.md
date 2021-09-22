@@ -1,4 +1,11 @@
 # Graph Library Provider Service
 
 ## ToDo
-* Add endpoint testing
+
+- Add arguments parsing
+- Containerize development
+- Support linting
+- Support pipeline
+- Deploy to GKE
+- Add endpoint testing
+- Integrate graph serialization
