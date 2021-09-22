@@ -41,16 +41,16 @@ func main() {
 
 	var algorithmService glserver.AlgorithmService
 	algorithmHandler := httptransport.NewServer(
-		glserver.makeAlgorithmEndpoint(algorithmService),
-		glserver.decodeAlgorithmRequest,
-		glserver.encodeResponse,
+		glserver.MakeAlgorithmEndpoint(algorithmService),
+		glserver.DecodeAlgorithmRequest,
+		glserver.EncodeResponse,
 	)
 
 	var computationService glserver.ComputationService
 	getAllComputationsHandler := httptransport.NewServer(
-		glserver.makeGetAllComputationsEndpoint(computationService),
-		glserver.decodeGetAllComputationsRequest,
-		glserver.encodeResponse,
+		glserver.MakeGetAllComputationsEndpoint(computationService),
+		glserver.DecodeGetAllComputationsRequest,
+		glserver.EncodeResponse,
 	)
 
 	http.Handle("/algorithm", algorithmHandler)
