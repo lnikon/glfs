@@ -2,9 +2,7 @@ package main
 
 import (
 	"net/http"
-	"os"
 
-	log "github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
 
 	glserver "github.com/lnikon/glfs/pkg/server"
@@ -17,8 +15,6 @@ const (
 )
 
 func main() {
-	logger := log.NewLogfmtLogger(os.Stderr)
-
 	// fieldKeys := []string{"method", "error"}
 	// requestCount := kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
 	// 	Namespace: "my_group",
@@ -56,5 +52,5 @@ func main() {
 	http.Handle("/algorithm", algorithmHandler)
 	http.Handle("/computation", getAllComputationsHandler)
 
-	logger.Log("err", http.ListenAndServe(":"+port, nil))
+	http.ListenAndServe(":"+port, nil)
 }
