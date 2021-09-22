@@ -52,5 +52,6 @@ func main() {
 	http.Handle("/algorithm", algorithmHandler)
 	http.Handle("/computation", getAllComputationsHandler)
 
+	// hello
 	http.ListenAndServe(":"+port, nil)
 }
