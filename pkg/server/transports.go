@@ -12,8 +12,7 @@ type algorithmRequest struct {
 }
 
 type algorithmResponse struct {
-	Algorithm []Algorithm `json:"algorithm"`
-}
+	Algorithm []Algorithm `json:"algorithm"` }
 
 func MakeAlgorithmEndpoint(svc AlgorithmService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {

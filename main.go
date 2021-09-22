@@ -7,7 +7,7 @@ import (
 	log "github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
 
-	glserver "github.com/lnikon/glfs/cmd/server"
+	glserver "github.com/lnikon/glfs/pkg/server"
 	// kitprometheus "github.com/go-kit/kit/metrics/prometheus"
 	// stdprometheus "github.com/prometheus/client_golang/prometheus"
 )
