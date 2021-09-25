@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glfs
+  labels:
+    app: glfs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: glfs
+  template:
+    metadata:
+      labels:
+        app: glfs
+    spec:
+      containers:
+        - name: glfs
+          image: lnikon/glfs:v0.1
+          ports:
+            - containerPort: 8090
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glfs
+  labels:
+    app: glfs
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8090
+      protocol: HTTP
+  selector:
+    app: glfs
