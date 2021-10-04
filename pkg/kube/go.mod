@@ -1,4 +1,4 @@
-module github.com/lnikon/glfs/cmd/kube
+module github.com/lnikon/glfs/pkg/kube
 
 go 1.17
 

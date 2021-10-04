@@ -49,22 +49,22 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 	return json.NewEncoder(w).Encode(response)
 }
 
-type PostComputationRequest struct {
+type postComputationRequest struct {
 	Algorithm Algorithm
 }
 
-type PostComputationResponse struct {
+type postComputationResponse struct {
 }
 
-func MakePostComputationsEndpoint(svc ComputationService) endpoint.Endpoint {
+func MakePostComputationEndpoint(svc ComputationService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		req := request.(PostComputationRequest)
+		req := request.(postComputationRequest)
 		s := svc.PostComputation(&req)
 		return s, nil
 	}
 }
 
-func DecodePostComputationsRequest(_ context.Context, r *http.Request) (interface{}, error) {
+func DecodePostComputationRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	var body struct {
 		Algorithm Algorithm `json:"algorithm"`
 	}
@@ -73,7 +73,7 @@ func DecodePostComputationsRequest(_ context.Context, r *http.Request) (interfac
 		return nil, err
 	}
 
-	return PostComputationRequest{
+	return postComputationRequest{
 		Algorithm: body.Algorithm,
 	}, nil
 }

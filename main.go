@@ -29,8 +29,8 @@ func main() {
 	)
 
 	postComputationHandler := httptransport.NewServer(
-		glserver.MakePostComputationsEndpoint(computationService),
-		glserver.DecodePostComputationsRequest,
+		glserver.MakePostComputationEndpoint(computationService),
+		glserver.DecodePostComputationRequest,
 		glserver.EncodeResponse,
 	)
 

@@ -7,8 +7,8 @@ require (
 	github.com/docker/docker v20.10.8+incompatible
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/go-kit/kit v0.11.0
-	github.com/gorilla/mux v1.8.0 // indirect
-	github.com/lnikon/glfs/pkg/server v0.0.0-20210922190808-9e121a6922ab
+	github.com/gorilla/mux v1.8.0
+	github.com/lnikon/glfs/pkg/server v0.0.0-20211004181810-a4ca1bd7795e
 	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	golang.org/x/net v0.0.0-20210520170846-37e1c6afe023 // indirect
