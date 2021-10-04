@@ -58,8 +58,9 @@ type PostComputationResponse struct {
 
 func MakePostComputationsEndpoint(svc ComputationService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		s := svc.PostComputation(request)
-		return PostComputationResponse{s}, nil
+		req := request.(PostComputationRequest)
+		s := svc.PostComputation(&req)
+		return s, nil
 	}
 }
 
@@ -68,7 +69,7 @@ func DecodePostComputationsRequest(_ context.Context, r *http.Request) (interfac
 		Algorithm Algorithm `json:"algorithm"`
 	}
 
-	if err := json.NewDecoder(&r.body).Decode(&body); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		return nil, err
 	}
 
