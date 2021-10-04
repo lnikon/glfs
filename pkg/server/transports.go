@@ -12,7 +12,8 @@ type algorithmRequest struct {
 }
 
 type algorithmResponse struct {
-	Algorithm []Algorithm `json:"algorithm"` }
+	Algorithm []Algorithm `json:"algorithm"`
+}
 
 func MakeAlgorithmEndpoint(svc AlgorithmService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
@@ -46,4 +47,32 @@ func DecodeGetAllComputationsRequest(_ context.Context, r *http.Request) (interf
 // Universal encoder for all responses
 func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	return json.NewEncoder(w).Encode(response)
+}
+
+type PostComputationRequest struct {
+	Algorithm Algorithm
+}
+
+type PostComputationResponse struct {
+}
+
+func MakePostComputationsEndpoint(svc ComputationService) endpoint.Endpoint {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
+		s := svc.PostComputation(request)
+		return PostComputationResponse{s}, nil
+	}
+}
+
+func DecodePostComputationsRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	var body struct {
+		Algorithm Algorithm `json:"algorithm"`
+	}
+
+	if err := json.NewDecoder(&r.body).Decode(&body); err != nil {
+		return nil, err
+	}
+
+	return PostComputationRequest{
+		Algorithm: body.Algorithm,
+	}, nil
 }

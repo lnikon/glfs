@@ -4,10 +4,8 @@ import (
 	"net/http"
 
 	httptransport "github.com/go-kit/kit/transport/http"
-
+	mux "github.com/gorilla/mux"
 	glserver "github.com/lnikon/glfs/pkg/server"
-	// kitprometheus "github.com/go-kit/kit/metrics/prometheus"
-	// stdprometheus "github.com/prometheus/client_golang/prometheus"
 )
 
 const (
@@ -15,26 +13,7 @@ const (
 )
 
 func main() {
-	// fieldKeys := []string{"method", "error"}
-	// requestCount := kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
-	// 	Namespace: "my_group",
-	// 	Subsystem: "string_service",
-	// 	Name:      "request_count",
-	// 	Help:      "Number of requests received",
-	// }, fieldKeys)
-	// requestLatency := kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
-	// 	Namespace: "my_group",
-	// 	Subsystem: "string_service",
-	// 	Name:      "request_latency_microseconds",
-	// 	Help:      "Total duration of requests in microseconds.",
-	// }, fieldKeys)
-	// countResult := kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
-	// 	Namespace: "my_group",
-	// 	Subsystem: "string_service",
-	// 	Name:      "count_result",
-	// 	Help:      "The result of each count method.",
-	// }, []string{}) // no fields here
-
+	// Cretate services and respective handlers
 	var algorithmService glserver.AlgorithmService
 	algorithmHandler := httptransport.NewServer(
 		glserver.MakeAlgorithmEndpoint(algorithmService),
@@ -49,9 +28,18 @@ func main() {
 		glserver.EncodeResponse,
 	)
 
-	http.Handle("/algorithm", algorithmHandler)
-	http.Handle("/computation", getAllComputationsHandler)
+	postComputationHandler := httptransport.NewServer(
+		glserver.MakePostComputationsEndpoint(computationService),
+		glserver.DecodePostComputationsRequest,
+		glserver.EncodeResponse,
+	)
 
-	// hello
-	http.ListenAndServe(":"+port, nil)
+	// Do routing staff
+	router := mux.NewRouter()
+	router.Methods("GET").Path("/algorithm").Handler(algorithmHandler)
+	router.Methods("GET").Path("/computation").Handler(getAllComputationsHandler)
+	router.Methods("POST").Path("/computation").Handler(postComputationHandler)
+
+	// Start to listen for incoming requests
+	http.ListenAndServe(":"+port, router)
 }
