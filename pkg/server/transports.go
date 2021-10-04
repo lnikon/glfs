@@ -36,9 +36,7 @@ type GetAllComputationsResponse struct {
 func MakeGetAllComputationsEndpoint(svc ComputationService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		s := svc.GetAllComputations()
-		return GetAllComputationsResponse{s}, nil
-	}
-}
+		return GetAllComputationsResponse{s}, nil } }
 
 func DecodeGetAllComputationsRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	return GetAllComputationsRequest{}, nil
@@ -49,16 +47,16 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 	return json.NewEncoder(w).Encode(response)
 }
 
-type postComputationRequest struct {
+type PostComputationRequest struct {
 	Algorithm Algorithm
 }
 
-type postComputationResponse struct {
+type PostComputationResponse struct {
 }
 
 func MakePostComputationEndpoint(svc ComputationService) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		req := request.(postComputationRequest)
+		req := request.(PostComputationRequest)
 		s := svc.PostComputation(&req)
 		return s, nil
 	}
@@ -73,7 +71,7 @@ func DecodePostComputationRequest(_ context.Context, r *http.Request) (interface
 		return nil, err
 	}
 
-	return postComputationRequest{
+	return PostComputationRequest{
 		Algorithm: body.Algorithm,
 	}, nil
 }
