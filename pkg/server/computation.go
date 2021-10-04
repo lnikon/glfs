@@ -15,8 +15,8 @@ func (c *ComputationService) GetAllComputations() []Computation {
 	return []Computation{{algorithm: Kruskal}}
 }
 
-func (c *ComputationService) PostComputation(request *postComputationRequest) postComputationResponse {
+func (c *ComputationService) PostComputation(request *PostComputationRequest) PostComputationResponse {
 	// glkube.CreateDeployment()
 	fmt.Printf("Post computation request called for %s", request.Algorithm)
-	return postComputationResponse{}
+	return PostComputationResponse{}
 }
