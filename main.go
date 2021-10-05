@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	glserver "github.com/lnikon/glfs-pkg/pkg/server"
@@ -15,14 +16,19 @@ const (
 
 func main() {
 	// Cretate services and respective handlers
-	var algorithmService glserver.AlgorithmService
+	algorithmService := glserver.NewAlgorithmService()
 	algorithmHandler := httptransport.NewServer(
 		glserver.MakeAlgorithmEndpoint(algorithmService),
 		glserver.DecodeAlgorithmRequest,
 		glserver.EncodeResponse,
 	)
 
-	var computationService glserver.ComputationService
+	computationService, err := glserver.NewComputationService()
+	if err != nil {
+		log.Fatal("Unable to create computation service!")
+		return
+	}
+
 	getAllComputationsHandler := httptransport.NewServer(
 		glserver.MakeGetAllComputationsEndpoint(computationService),
 		glserver.DecodeGetAllComputationsRequest,

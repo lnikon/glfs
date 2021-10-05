@@ -14,6 +14,13 @@ as minikube does not support load balancing to forward the requests to the pods.
 
 ## ToDo
 
+### Server
+
+- Sync with kubernetes engine on wake-up and fill the computations struct
+- Store currently running algorithm name inside kube deployment
+
+### Kube
+
 - Add arguments parsing
 - Containerize development
 - Support linting
