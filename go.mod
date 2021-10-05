@@ -5,8 +5,10 @@ go 1.17
 require (
 	github.com/go-kit/kit v0.12.0
 	github.com/gorilla/mux v1.8.0
-	github.com/lnikon/glfs-pkg/pkg/server v0.0.0-20211005072146-6071437d25b6
+	github.com/lnikon/glfs-pkg/pkg/server v0.0.0-20211005075311-7f984f64cd01
 )
+
+replace github.com/lnikon/glfs-pkg/pkg/server => ../glfs-pkg/pkg/server
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -20,7 +22,7 @@ require (
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/lnikon/glfs-pkg/pkg/kube v0.0.0-20211005070856-09a9e4d36c6c // indirect
+	github.com/lnikon/glfs-pkg/pkg/kube v0.0.0-20211005074206-76fd7d7e7fac // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
