@@ -1,7 +1,25 @@
 FROM golang:1.17
 
-WORKDIR /app
-COPY . .
+WORKDIR /workspace/glfs
+RUN git clone https://github.com/lnikon/glfs .
+
+WORKDIR /workspace/glfs-pkg
+RUN git clone https://github.com/lnikon/glfs-pkg .
+
+WORKDIR /workspace/glfs-pkg/pkg/server
+RUN go get -u
+RUN go mod tidy
+RUN go build .
+RUN go install
+
+WORKDIR /workspace/glfs-pkg/pkg/kube
+RUN go get -u
+RUN go mod tidy
+RUN go build .
+RUN go install
+
+WORKDIR /workspace/glfs
+RUN go get -u
 RUN go mod tidy
 RUN go build .
 RUN go install
