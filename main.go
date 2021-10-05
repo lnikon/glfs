@@ -3,9 +3,10 @@ package main
 import (
 	"net/http"
 
+	glserver "github.com/lnikon/glfs-pkg/server"
+
 	httptransport "github.com/go-kit/kit/transport/http"
 	mux "github.com/gorilla/mux"
-	glserver "github.com/lnikon/glfs/pkg/server"
 )
 
 const (
