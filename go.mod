@@ -8,9 +8,11 @@ require (
 	github.com/lnikon/glfs-pkg/pkg/server v0.0.0-20211005075311-7f984f64cd01
 )
 
-replace github.com/lnikon/glfs-pkg/pkg/server => ../glfs-pkg/pkg/server
+replace (
+	github.com/lnikon/glfs-pkg/pkg/kube => ../glfs-pkg/pkg/kube
+	github.com/lnikon/glfs-pkg/pkg/server => ../glfs-pkg/pkg/server
 
-replace github.com/lnikon/glfs-pkg/pkg/kube => ../glfs-pkg/pkg/kube
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
