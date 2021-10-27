@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: glfs
-          image: lnikon/glfs:v0.6
+          image: lnikon/glfs:v0.10
           ports:
             - containerPort: 8090
 ---
