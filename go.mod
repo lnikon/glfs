@@ -11,6 +11,7 @@ require (
 replace (
 	github.com/lnikon/glfs-pkg/pkg/kube => ../glfs-pkg/pkg/kube
 	github.com/lnikon/glfs-pkg/pkg/server => ../glfs-pkg/pkg/server
+	github.com/lnikon/glfs-pkg/pkg/upcxx-operator => ../glfs-pkg/pkg/upcxx-operator
 
 )
 
@@ -27,6 +28,7 @@ require (
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/lnikon/glfs-pkg/pkg/kube v0.0.0-20211031180937-97eea62bdb9c // indirect
+	github.com/lnikon/glfs-pkg/pkg/upcxx-operator v0.0.0-00010101000000-000000000000 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
@@ -46,6 +48,7 @@ require (
 	k8s.io/client-go v0.22.3 // indirect
 	k8s.io/klog/v2 v2.30.0 // indirect
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
+	sigs.k8s.io/controller-runtime v0.10.2 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
