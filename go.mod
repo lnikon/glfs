@@ -9,10 +9,10 @@ require (
 )
 
 replace (
+	github.com/lnikon/glfs-pkg/pkg/constants => ../glfs-pkg/pkg/constants
 	github.com/lnikon/glfs-pkg/pkg/kube => ../glfs-pkg/pkg/kube
 	github.com/lnikon/glfs-pkg/pkg/server => ../glfs-pkg/pkg/server
 	github.com/lnikon/glfs-pkg/pkg/upcxx-operator => ../glfs-pkg/pkg/upcxx-operator
-
 )
 
 require (
@@ -27,14 +27,15 @@ require (
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/lnikon/glfs-pkg/pkg/constants v0.0.0-20211103152516-cac955b50b84 // indirect
 	github.com/lnikon/glfs-pkg/pkg/kube v0.0.0-20211031180937-97eea62bdb9c // indirect
-	github.com/lnikon/glfs-pkg/pkg/upcxx-operator v0.0.0-00010101000000-000000000000 // indirect
+	github.com/lnikon/glfs-pkg/pkg/upcxx-operator v0.0.0-20211102054123-0af260885377 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
+	golang.org/x/net v0.0.0-20211101193420-4a448f8816b3 // indirect
 	golang.org/x/oauth2 v0.0.0-20211028175245-ba495a64dcb5 // indirect
-	golang.org/x/sys v0.0.0-20211031064116-611d5d643895 // indirect
+	golang.org/x/sys v0.0.0-20211102061401-a2f17f7b995c // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
