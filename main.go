@@ -35,6 +35,12 @@ func main() {
 		glserver.EncodeResponse,
 	)
 
+	getComputationHandler := httptransport.NewServer(
+		glserver.MakeGetComputationEndpoint(computationService),
+		glserver.DecodeGetComputationRequest,
+		glserver.EncodeResponse,
+	)
+
 	postComputationHandler := httptransport.NewServer(
 		glserver.MakePostComputationEndpoint(computationService),
 		glserver.DecodePostComputationRequest,
@@ -43,10 +49,20 @@ func main() {
 
 	// Do routing staff
 	router := mux.NewRouter()
+
+	// Endpoint for algorithms
 	router.Methods("GET").Path("/algorithm").Handler(algorithmHandler)
-	router.Methods("GET").Path("/computation").Handler(getAllComputationsHandler)
-	router.Methods("POST").Path("/computation").Handler(postComputationHandler)
+
+	// Endpoints for computations
+	// GET endpoints
+	computationRouter := router.PathPrefix("/computation").Subrouter()
+	computationRouter.Methods("GET").Path("/{name}").Handler(getComputationHandler)
+	computationRouter.Methods("GET").Path("/").Handler(getAllComputationsHandler)
+
+	// POST endpoints
+	computationRouter.Methods("POST").Path("/").Handler(postComputationHandler)
 
 	// Start to listen for incoming requests
+	log.Default().Printf("Listening on %s:%s\n", ":", port)
 	http.ListenAndServe(":"+port, router)
 }
