@@ -1,20 +1,23 @@
 package main
 
 import (
-	"log"
 	"net/http"
-
-	glserver "github.com/lnikon/glfs-pkg/pkg/server"
+	"os"
 
 	httptransport "github.com/go-kit/kit/transport/http"
+	log "github.com/go-kit/log"
 	mux "github.com/gorilla/mux"
+	glserver "github.com/lnikon/glfs-pkg/pkg/server"
 )
 
 const (
-	port = "8090"
+	hostname = ":"
+	port     = "8090"
 )
 
 func main() {
+	logger := log.NewLogfmtLogger(os.Stdout)
+
 	// Cretate services and respective handlers
 	algorithmService := glserver.NewAlgorithmService()
 	algorithmHandler := httptransport.NewServer(
@@ -24,8 +27,9 @@ func main() {
 	)
 
 	computationService, err := glserver.NewComputationService()
+	computationService = glserver.LoggingMiddleware{Next: computationService, Logger: logger}
 	if err != nil {
-		log.Fatal("Unable to create computation service!")
+		logger.Log("unable to create computation service")
 		return
 	}
 
@@ -63,6 +67,6 @@ func main() {
 	computationRouter.Methods("POST").Path("/").Handler(postComputationHandler)
 
 	// Start to listen for incoming requests
-	log.Default().Printf("Listening on %s:%s\n", ":", port)
-	http.ListenAndServe(":"+port, router)
+	logger.Log("host", hostname, "port", port)
+	http.ListenAndServe(hostname+port, router)
 }
