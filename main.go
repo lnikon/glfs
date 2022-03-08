@@ -27,7 +27,7 @@ func main() {
 	)
 
 	computationService, err := glserver.NewComputationService()
-	computationService = glserver.LoggingMiddleware{Next: computationService, Logger: logger}
+	//computationService = glserver.LoggingMiddleware{Next: computationService, Logger: logger}
 	if err != nil {
 		logger.Log("unable to create computation service")
 		return
