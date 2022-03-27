@@ -7,11 +7,9 @@ WORKDIR /workspace/glfs-pkg
 RUN git clone https://github.com/lnikon/glfs-pkg .
 
 WORKDIR /workspace/glfs
-RUN go get -u
 RUN go mod tidy
-RUN go build .
-RUN go install
+RUN go build ./cmd/glfs
 
 EXPOSE 8090
 
-CMD glfs
+CMD ./glfs
