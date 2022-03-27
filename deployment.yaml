@@ -32,5 +32,6 @@ spec:
       containers:
         - name: glfs
           image: glfs:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 8090
