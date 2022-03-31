@@ -35,10 +35,10 @@ type GetComputationRequest struct {
 }
 
 type GetComputationResponse struct {
-	Computation *Computation
+	Computation *ComputationAllocationDescription
 }
 
-func MakeGetComputationEndpoint(svc ComputationServiceIfc) endpoint.Endpoint {
+func MakeGetComputationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetComputationRequest)
 		computation, err := svc.GetComputation(req.Name)
@@ -46,7 +46,7 @@ func MakeGetComputationEndpoint(svc ComputationServiceIfc) endpoint.Endpoint {
 			return nil, err
 		}
 
-		return GetComputationResponse{Computation: computation}, nil
+		return GetComputationResponse{Computation: &computation}, nil
 	}
 }
 
@@ -61,10 +61,10 @@ type GetAllComputationsRequest struct {
 }
 
 type GetAllComputationsResponse struct {
-	Computations []Computation
+	Computations []ComputationAllocationDescription
 }
 
-func MakeGetAllComputationsEndpoint(svc ComputationServiceIfc) endpoint.Endpoint {
+func MakeGetAllComputationsEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		return GetAllComputationsResponse{Computations: svc.GetAllComputations()}, nil
 	}
@@ -80,22 +80,22 @@ func EncodeResponse(_ context.Context, w http.ResponseWriter, response interface
 }
 
 type PostComputationRequest struct {
-	Algorithm glconstants.Algorithm
+	Name     string
+	Replicas int32
 }
 
 type PostComputationResponse struct {
-	Computation *Computation
 }
 
-func MakePostComputationEndpoint(svc ComputationServiceIfc) endpoint.Endpoint {
+func MakePostComputationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(PostComputationRequest)
-		computation, err := svc.PostComputation(req.Algorithm)
+		err := svc.PostComputation(ComputationAllocationDescription{Name: req.Name, Replicas: req.Replicas})
 		if err != nil {
 			return nil, err
 		}
 
-		return PostComputationResponse{Computation: computation}, nil
+		return PostComputationResponse{}, nil
 	}
 }
 
@@ -108,7 +108,5 @@ func DecodePostComputationRequest(_ context.Context, r *http.Request) (interface
 		return nil, err
 	}
 
-	return PostComputationRequest{
-		Algorithm: body.Algorithm,
-	}, nil
+	return PostComputationRequest{}, nil
 }

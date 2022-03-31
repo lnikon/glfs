@@ -5,15 +5,14 @@ import (
 	"time"
 
 	log "github.com/go-kit/log"
-	glconstants "github.com/lnikon/glfs-pkg/pkg/constants"
 )
 
 type LoggingMiddleware struct {
-	Next   ComputationServiceIfc
+	Next   ComputationAllocationServiceIfc
 	Logger log.Logger
 }
 
-func (mw LoggingMiddleware) GetComputation(name string) (computation *Computation, err error) {
+func (mw LoggingMiddleware) GetComputation(name string) (computation ComputationAllocationDescription, err error) {
 	defer func(begin time.Time) {
 		mw.Logger.Log(
 			"method", "GetComputation",
@@ -31,7 +30,7 @@ func (mw LoggingMiddleware) GetComputation(name string) (computation *Computatio
 	return
 }
 
-func (mw LoggingMiddleware) GetAllComputations() (output []Computation) {
+func (mw LoggingMiddleware) GetAllComputations() (output []ComputationAllocationDescription) {
 	defer func(begin time.Time) {
 		mw.Logger.Log(
 			"method", "GetAllComputations",
@@ -44,17 +43,16 @@ func (mw LoggingMiddleware) GetAllComputations() (output []Computation) {
 	return
 }
 
-func (mw LoggingMiddleware) PostComputation(algorithm glconstants.Algorithm) (output *Computation, err error) {
+func (mw LoggingMiddleware) PostComputation(description *ComputationAllocationDescription) (err error) {
 	defer func(begin time.Time) {
 		mw.Logger.Log(
 			"method", "PostComputation",
-			"input", fmt.Sprintf("%v", algorithm),
-			"output", fmt.Sprintf("%v", output),
+			"input", fmt.Sprintf("%v", description),
 			"took", time.Since(begin),
 		)
 	}(time.Now())
 
-	output, err = mw.Next.PostComputation(algorithm)
+	err = mw.Next.PostComputation(*description)
 	if err != nil {
 		mw.Logger.Log("Error: ", err.Error())
 	}

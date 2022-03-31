@@ -3,98 +3,69 @@ package server
 import (
 	"fmt"
 
-	glconstants "github.com/lnikon/glfs-pkg/pkg/constants"
 	glkube "github.com/lnikon/glfs/kube"
 )
 
-const (
-	ComputationDeploymentNamePattern = "computation-%d"
-)
-
-type Computation struct {
-	Algorithm glconstants.Algorithm `json:"algorithm"`
-	Name      string                `json:"name"`
+type ComputationAllocationDescription struct {
+	Name     string `json:"name"`
+	Replicas int32  `json:"replicas"`
 }
 
-func (c *Computation) String() string {
-	return fmt.Sprintf("{Algorithm: %v, Name: %v}", c.Algorithm, c.Name)
+type ComputationAllocation struct {
+	Allocations []ComputationAllocationDescription
 }
 
-type ComputationServiceIfc interface {
-	GetComputation(name string) (*Computation, error)
-	GetAllComputations() []Computation
-	PostComputation(algorithm glconstants.Algorithm) (*Computation, error)
+type ComputationAllocationServiceIfc interface {
+	GetComputation(name string) (ComputationAllocationDescription, error)
+	GetAllComputations() []ComputationAllocationDescription
+	PostComputation(ComputationAllocationDescription) error
 	DeleteComputation(name string) error
 }
 
-type ComputationService struct {
-	computations []Computation
+type ComputationAllocationService struct {
+	computations ComputationAllocation
 }
 
-func NewComputationService() (ComputationServiceIfc, error) {
-	computationService := &ComputationService{}
-
-	// deploymentsList := glkube.GetAllDeployments()
-	// if deploymentsList == nil {
-	// 	return nil, errors.New("unable to get all deployments")
-	// }
-
-	// computationDeploymentNameRegexp, err := regexp.Compile("(computation-[0-9]+)")
-	// if err != nil {
-	// 	log.Fatal("Unable to compile regexp")
-	// 	return nil, errors.New("unable to compile computation name matching regexp")
-	// }
-
-	// for _, deployment := range deploymentsList.Items {
-	// 	name := deployment.ObjectMeta.Name
-	// 	if computationDeploymentNameRegexp.MatchString(name) {
-	// 		computationService.computations = append(computationService.computations, Computation{Algorithm: Kruskal, Name: name})
-	// 	}
-	// }
-
+func NewComputationService() (*ComputationAllocationService, error) {
+	computationService := &ComputationAllocationService{}
 	return computationService, nil
 }
 
-func (c *ComputationService) generateComputationName() string {
-	return fmt.Sprintf(ComputationDeploymentNamePattern, len(c.computations)+1)
-}
-
-func (c *ComputationService) GetAllComputations() []Computation {
+func (c *ComputationAllocationService) GetAllComputations() []ComputationAllocationDescription {
 	upcxxList := glkube.GetAllDeployments()
-	var computations []Computation
+	descriptions := []ComputationAllocationDescription{}
 	for _, upcxx := range upcxxList.Items {
-		computations = append(computations, Computation{
-			Name:      upcxx.Spec.StatefulSetName,
-			Algorithm: "Prim",
+		descriptions = append(descriptions, ComputationAllocationDescription{
+			Name:     upcxx.Spec.StatefulSetName,
+			Replicas: upcxx.Spec.WorkerCount,
 		})
 	}
 
-	return computations
+	return descriptions
 }
 
-func (c *ComputationService) GetComputation(name string) (*Computation, error) {
+func (c *ComputationAllocationService) GetComputation(name string) (ComputationAllocationDescription, error) {
 	upcxx := glkube.GetDeployment(name)
 	if upcxx == nil {
-		return nil, fmt.Errorf("resource does not exists")
+		return ComputationAllocationDescription{}, fmt.Errorf("resource does not exists")
 	}
 
-	return &Computation{
-		Name:      upcxx.Spec.StatefulSetName,
-		Algorithm: upcxx.Spec.Algorithm,
+	return ComputationAllocationDescription{
+		Name:     upcxx.Spec.StatefulSetName,
+		Replicas: upcxx.Spec.WorkerCount,
 	}, nil
 }
 
-func (c *ComputationService) PostComputation(algorithm glconstants.Algorithm) (*Computation, error) {
-	computation := Computation{Algorithm: algorithm, Name: c.generateComputationName()}
-	if err := glkube.CreateUPCXX(computation.Name); err != nil {
-		return &computation, err
+func (c *ComputationAllocationService) PostComputation(description *ComputationAllocationDescription) error {
+	upcxxReq := glkube.UPCXXRequest{Name: description.Name, Replicas: description.Replicas}
+	if err := glkube.CreateUPCXX(upcxxReq); err != nil {
+		return err
 	}
 
-	c.computations = append(c.computations, computation)
-	return &computation, nil
+	c.computations.Allocations = append(c.computations.Allocations, *description)
+	return nil
 }
 
-func (c *ComputationService) DeleteComputation(name string) error {
-	//return glkube.CreateUPCXX(name)
-	return nil
+func (c *ComputationAllocationService) DeleteComputation(name string) error {
+	return glkube.DeleteDeployment(name)
 }

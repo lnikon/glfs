@@ -53,20 +53,13 @@ func main() {
 
 	// Do routing staff
 	router := mux.NewRouter()
-
-	// Endpoint for algorithms
-	router.Methods("GET").Path("/algorithm").Handler(algorithmHandler)
-
-	// Endpoints for computations
-	// GET endpoints
 	computationRouter := router.PathPrefix("/computation").Subrouter()
 	computationRouter.Methods("GET").Path("/{name}").Handler(getComputationHandler)
 	computationRouter.Methods("GET").Path("/").Handler(getAllComputationsHandler)
-
-	// POST endpoints
-	computationRouter.Methods("POST").Path("/").Handler(postComputationHandler)
+	computationRouter.Methods("POST").Handler(postComputationHandler)
 
 	// Start to listen for incoming requests
+	// VAGAGTODO: Update logging
 	logger.Log("host", hostname, "port", port)
 	http.ListenAndServe(hostname+port, router)
 }

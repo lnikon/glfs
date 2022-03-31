@@ -5,7 +5,6 @@ import (
 	"log"
 	"path/filepath"
 
-	glconst "github.com/lnikon/glfs-pkg/pkg/constants"
 	upcxxv1alpha1types "github.com/lnikon/upcxx-operator/api/v1alpha1"
 	upcxxv1alpha1clientset "github.com/lnikon/upcxx-operator/clientset/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -74,7 +73,12 @@ func createUpcxxClient() upcxxv1alpha1clientset.UPCXXInterface {
 //	return len(pods.Items)
 //}
 
-func CreateUPCXX(name string) error {
+type UPCXXRequest struct {
+	Name     string
+	Replicas int32
+}
+
+func CreateUPCXX(req UPCXXRequest) error {
 	upcxxClient := createUpcxxClient()
 
 	groupVersionKind := schema.GroupVersionKind{}
@@ -84,21 +88,18 @@ func CreateUPCXX(name string) error {
 
 	apiVersion, kind := groupVersionKind.ToAPIVersionAndKind()
 
-	log.Default().Printf("%v\n", groupVersionKind)
-
 	upcxx := &upcxxv1alpha1types.UPCXX{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       kind,
 			APIVersion: apiVersion,
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
+			Name:      req.Name,
 			Namespace: "default",
 		},
 		Spec: upcxxv1alpha1types.UPCXXSpec{
-			StatefulSetName: name,
-			WorkerCount:     2,
-			Algorithm:       glconst.Kruskal,
+			StatefulSetName: req.Name,
+			WorkerCount:     req.Replicas,
 		},
 		Status: upcxxv1alpha1types.UPCXXStatus{},
 	}
