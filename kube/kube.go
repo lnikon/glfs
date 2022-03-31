@@ -3,18 +3,15 @@ package kube
 import (
 	"flag"
 	"log"
+	"net"
 	"path/filepath"
 
 	upcxxv1alpha1types "github.com/lnikon/upcxx-operator/api/v1alpha1"
 	upcxxv1alpha1clientset "github.com/lnikon/upcxx-operator/clientset/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/util/homedir"
 	ctrl "sigs.k8s.io/controller-runtime"
-
-	// meta "k8s.io/apimachinery/pkg/apis/meta/v1"
-	// apiextensions "k8s.io/apiextensions-apiserver"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	// uuid "k8s.io/apimachinery/pkg/util/uuid"
 )
 
 func init() {
@@ -78,6 +75,12 @@ type UPCXXRequest struct {
 	Replicas int32
 }
 
+type UPCXXResponse struct {
+	Name     string
+	Replicas int32
+	IP       net.IP
+}
+
 func CreateUPCXX(req UPCXXRequest) error {
 	upcxxClient := createUpcxxClient()
 
@@ -108,24 +111,53 @@ func CreateUPCXX(req UPCXXRequest) error {
 	return err
 }
 
-func GetDeployment(name string) *upcxxv1alpha1types.UPCXX {
+func GetDeployment(name string) *UPCXXResponse {
+	result := &UPCXXResponse{}
+
 	upcxxClient := createUpcxxClient()
 	deployement, err := upcxxClient.Get(name, metav1.GetOptions{})
 	if err != nil {
 		return nil
 	}
 
-	return deployement
-}
-
-func GetAllDeployments() *upcxxv1alpha1types.UPCXXList {
-	deploymentClient := createUpcxxClient()
-	deploymentList, err := deploymentClient.List(metav1.ListOptions{})
+	launcherSvc, err := upcxxClient.GetLauncherService(name)
 	if err != nil {
 		return nil
 	}
 
-	return deploymentList
+	ip := net.IP{}
+	if len(launcherSvc.Spec.ExternalIPs) > 0 {
+		ip = net.ParseIP(launcherSvc.Spec.ExternalIPs[0])
+	}
+
+	result = &UPCXXResponse{Name: deployement.Name, Replicas: deployement.Spec.WorkerCount, IP: ip}
+
+	return result
+}
+
+func GetAllDeployments() []UPCXXResponse {
+	result := []UPCXXResponse{}
+
+	upcxxClient := createUpcxxClient()
+	deploymentList, err := upcxxClient.List(metav1.ListOptions{})
+	if err != nil {
+		return result
+	}
+
+	for _, upcxx := range deploymentList.Items {
+		response := UPCXXResponse{Name: upcxx.Spec.StatefulSetName, Replicas: upcxx.Spec.WorkerCount}
+
+		launcherSvc, err := upcxxClient.GetLauncherService(upcxx.Spec.StatefulSetName)
+		if err != nil {
+			return []UPCXXResponse{}
+		}
+
+		response.IP = net.ParseIP(launcherSvc.Spec.ExternalIPs[0])
+
+		result = append(result, response)
+	}
+
+	return result
 }
 
 func DeleteDeployment(name string) error {

@@ -7,7 +7,7 @@ require (
 	github.com/go-kit/log v0.2.0
 	github.com/gorilla/mux v1.8.0
 	github.com/lnikon/glfs-pkg/pkg/constants v0.0.0-20220308191534-cab32e2ed4f3
-	github.com/lnikon/upcxx-operator v0.0.0-20220327201515-5df32e16acec
+	github.com/lnikon/upcxx-operator v0.0.0-20220331181509-6e065058bc93
 	k8s.io/apimachinery v0.23.5
 	k8s.io/client-go v0.23.5
 	sigs.k8s.io/controller-runtime v0.11.1
@@ -39,6 +39,7 @@ require (
 	github.com/prometheus/common v0.30.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/oauth2 v0.0.0-20211028175245-ba495a64dcb5 // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect

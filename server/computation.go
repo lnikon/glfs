@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"net"
 
 	glkube "github.com/lnikon/glfs/kube"
 )
@@ -9,6 +10,7 @@ import (
 type ComputationAllocationDescription struct {
 	Name     string `json:"name"`
 	Replicas int32  `json:"replicas"`
+	IP       net.IP `json:"ip"`
 }
 
 type ComputationAllocation struct {
@@ -32,12 +34,13 @@ func NewComputationService() (ComputationAllocationServiceIfc, error) {
 }
 
 func (c *ComputationAllocationService) GetAllComputations() []ComputationAllocationDescription {
-	upcxxList := glkube.GetAllDeployments()
+	upcxxResponse := glkube.GetAllDeployments()
 	descriptions := []ComputationAllocationDescription{}
-	for _, upcxx := range upcxxList.Items {
+	for _, upcxx := range upcxxResponse {
 		descriptions = append(descriptions, ComputationAllocationDescription{
-			Name:     upcxx.Spec.StatefulSetName,
-			Replicas: upcxx.Spec.WorkerCount,
+			Name:     upcxx.Name,
+			Replicas: upcxx.Replicas,
+			IP:       upcxx.IP,
 		})
 	}
 
@@ -51,8 +54,9 @@ func (c *ComputationAllocationService) GetComputation(name string) (ComputationA
 	}
 
 	return ComputationAllocationDescription{
-		Name:     upcxx.Spec.StatefulSetName,
-		Replicas: upcxx.Spec.WorkerCount,
+		Name:     upcxx.Name,
+		Replicas: upcxx.Replicas,
+		IP:       upcxx.IP,
 	}, nil
 }
 
