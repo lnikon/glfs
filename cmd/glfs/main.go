@@ -46,7 +46,7 @@ func main() {
 	// Do routing staff
 	router := mux.NewRouter()
 	computationRouter := router.PathPrefix("/computation").Subrouter()
-	computationRouter.Methods("GET").Path("/{name}").Handler(getComputationHandler)
+	computationRouter.Methods("GET").Path("/name").Handler(getComputationHandler)
 	computationRouter.Methods("GET").Path("/").Handler(getAllComputationsHandler)
 	computationRouter.Methods("POST").Handler(postComputationHandler)
 

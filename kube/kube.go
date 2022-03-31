@@ -122,12 +122,17 @@ func GetDeployment(name string) *UPCXXResponse {
 
 	launcherSvc, err := upcxxClient.GetLauncherService(name)
 	if err != nil {
+		log.Printf("kube.GetDeployment failed to get launcher service\n")
 		return nil
 	}
 
+	log.Printf("GetDeployment: Got launcher service: %v\n", launcherSvc)
+
 	ip := net.IP{}
-	if len(launcherSvc.Spec.ExternalIPs) > 0 {
-		ip = net.ParseIP(launcherSvc.Spec.ExternalIPs[0])
+	if len(launcherSvc.Status.LoadBalancer.Ingress) > 0 {
+		ip = net.ParseIP(launcherSvc.Status.LoadBalancer.Ingress[0].IP)
+	} else {
+		log.Println("GetDeployment: Empty ExternalIPs")
 	}
 
 	result = &UPCXXResponse{Name: deployement.Name, Replicas: deployement.Spec.WorkerCount, IP: ip}

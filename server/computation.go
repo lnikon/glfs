@@ -14,7 +14,7 @@ type ComputationAllocationDescription struct {
 }
 
 type ComputationAllocation struct {
-	Allocations []ComputationAllocationDescription
+	Allocations []ComputationAllocationDescription `json:"allocations"`
 }
 
 type ComputationAllocationServiceIfc interface {
@@ -25,7 +25,7 @@ type ComputationAllocationServiceIfc interface {
 }
 
 type ComputationAllocationService struct {
-	computations ComputationAllocation
+	computations ComputationAllocation `json:"computations"`
 }
 
 func NewComputationService() (ComputationAllocationServiceIfc, error) {

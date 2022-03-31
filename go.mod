@@ -7,11 +7,13 @@ require (
 	github.com/go-kit/log v0.2.0
 	github.com/gorilla/mux v1.8.0
 	github.com/lnikon/glfs-pkg/pkg/constants v0.0.0-20220308191534-cab32e2ed4f3
-	github.com/lnikon/upcxx-operator v0.0.0-20220331181509-6e065058bc93
+	github.com/lnikon/upcxx-operator v0.0.0-00010101000000-000000000000
 	k8s.io/apimachinery v0.23.5
 	k8s.io/client-go v0.23.5
 	sigs.k8s.io/controller-runtime v0.11.1
 )
+
+replace github.com/lnikon/upcxx-operator => ../upcxx-operator
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
