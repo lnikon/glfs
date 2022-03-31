@@ -18,14 +18,6 @@ const (
 func main() {
 	logger := log.NewLogfmtLogger(os.Stdout)
 
-	// Cretate services and respective handlers
-	algorithmService := glserver.NewAlgorithmService()
-	algorithmHandler := httptransport.NewServer(
-		glserver.MakeAlgorithmEndpoint(algorithmService),
-		glserver.DecodeAlgorithmRequest,
-		glserver.EncodeResponse,
-	)
-
 	computationService, err := glserver.NewComputationService()
 	computationService = glserver.LoggingMiddleware{Next: computationService, Logger: logger}
 	if err != nil {

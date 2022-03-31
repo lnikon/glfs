@@ -43,7 +43,7 @@ func (mw LoggingMiddleware) GetAllComputations() (output []ComputationAllocation
 	return
 }
 
-func (mw LoggingMiddleware) PostComputation(description *ComputationAllocationDescription) (err error) {
+func (mw LoggingMiddleware) PostComputation(description ComputationAllocationDescription) (err error) {
 	defer func(begin time.Time) {
 		mw.Logger.Log(
 			"method", "PostComputation",
@@ -52,7 +52,7 @@ func (mw LoggingMiddleware) PostComputation(description *ComputationAllocationDe
 		)
 	}(time.Now())
 
-	err = mw.Next.PostComputation(*description)
+	err = mw.Next.PostComputation(description)
 	if err != nil {
 		mw.Logger.Log("Error: ", err.Error())
 	}

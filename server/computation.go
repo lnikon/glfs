@@ -26,7 +26,7 @@ type ComputationAllocationService struct {
 	computations ComputationAllocation
 }
 
-func NewComputationService() (*ComputationAllocationService, error) {
+func NewComputationService() (ComputationAllocationServiceIfc, error) {
 	computationService := &ComputationAllocationService{}
 	return computationService, nil
 }
@@ -56,13 +56,13 @@ func (c *ComputationAllocationService) GetComputation(name string) (ComputationA
 	}, nil
 }
 
-func (c *ComputationAllocationService) PostComputation(description *ComputationAllocationDescription) error {
+func (c *ComputationAllocationService) PostComputation(description ComputationAllocationDescription) error {
 	upcxxReq := glkube.UPCXXRequest{Name: description.Name, Replicas: description.Replicas}
 	if err := glkube.CreateUPCXX(upcxxReq); err != nil {
 		return err
 	}
 
-	c.computations.Allocations = append(c.computations.Allocations, *description)
+	c.computations.Allocations = append(c.computations.Allocations, description)
 	return nil
 }
 
