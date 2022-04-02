@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-kit/kit/endpoint"
@@ -65,6 +66,10 @@ func DecodeGetAllComputationsRequest(_ context.Context, r *http.Request) (interf
 func MakePostComputationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
 		req := request.(PostComputationRequest)
+		if len(req.Name) == 0 || req.Replicas <= 0 {
+			return nil, fmt.Errorf("Empty computation name=%s or wrong replicas=%d\n", req.Name, req.Replicas)
+		}
+
 		err := svc.PostComputation(ComputationAllocationDescription{Name: req.Name, Replicas: req.Replicas})
 		if err != nil {
 			return nil, err
