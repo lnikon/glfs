@@ -6,13 +6,12 @@ import (
 
 	httptransport "github.com/go-kit/kit/transport/http"
 	log "github.com/go-kit/log"
-	mux "github.com/gorilla/mux"
-	glserver "github.com/lnikon/glfs/server"
+	mux "github.com/gorilla/mux" glserver "github.com/lnikon/glfs/server"
 )
 
 const (
 	hostname = ":"
-	port     = "8090"
+	port     = "8080"
 )
 
 func main() {

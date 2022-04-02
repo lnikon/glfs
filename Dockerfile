@@ -1,7 +1,7 @@
 FROM golang:1.17
 
 WORKDIR /workspace
-RUN git clone https://github.com/lnikon/upcxx-operator .
+RUN git clone https://github.com/lnikon/upcxx-operator
 
 WORKDIR /workspace/glfs
 RUN git clone https://github.com/lnikon/glfs .
