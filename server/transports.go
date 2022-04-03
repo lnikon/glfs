@@ -15,6 +15,7 @@ type GetComputationRequest struct {
 
 type GetComputationResponse struct {
 	Computation ComputationAllocationDescription `json:"computation"`
+	Error       string                           `json:"error,omitempty"`
 }
 
 type GetAllComputationsRequest struct {
@@ -30,6 +31,7 @@ type PostComputationRequest struct {
 }
 
 type PostComputationResponse struct {
+	Result string `json:"result,omitempty"`
 }
 
 func MakeGetComputationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
@@ -37,7 +39,7 @@ func MakeGetComputationEndpoint(svc ComputationAllocationServiceIfc) endpoint.En
 		req := request.(GetComputationRequest)
 		computation, err := svc.GetComputation(req.Name)
 		if err != nil {
-			return nil, err
+			return GetComputationResponse{Error: err.Error()}, nil
 		}
 
 		return GetComputationResponse{Computation: computation}, nil
@@ -72,10 +74,10 @@ func MakePostComputationEndpoint(svc ComputationAllocationServiceIfc) endpoint.E
 
 		err := svc.PostComputation(ComputationAllocationDescription{Name: req.Name, Replicas: req.Replicas})
 		if err != nil {
-			return nil, err
+			return PostComputationResponse{Result: err.Error()}, nil
 		}
 
-		return PostComputationResponse{}, nil
+		return PostComputationResponse{Result: "Allocating"}, nil
 	}
 }
 

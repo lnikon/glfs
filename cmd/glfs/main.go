@@ -12,7 +12,7 @@ import (
 
 const (
 	hostname = ":"
-	port     = "8080"
+	port     = "8090"
 )
 
 func main() {
@@ -53,5 +53,8 @@ func main() {
 	// Start to listen for incoming requests
 	// VAGAGTODO: Update logging
 	logger.Log("host", hostname, "port", port)
-	http.ListenAndServe(hostname+port, router)
+	err = http.ListenAndServe(hostname+port, router)
+	if err != nil {
+		logger.Log("Error", err)
+	}
 }
