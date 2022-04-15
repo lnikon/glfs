@@ -2,6 +2,7 @@ package kube
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"path/filepath"
@@ -157,7 +158,11 @@ func GetAllDeployments() []UPCXXResponse {
 			return []UPCXXResponse{}
 		}
 
-		response.IP = net.ParseIP(launcherSvc.Spec.ExternalIPs[0])
+		if len(launcherSvc.Status.LoadBalancer.Ingress) > 0 {
+			response.IP = net.ParseIP(launcherSvc.Status.LoadBalancer.Ingress[0].IP)
+		} else {
+			log.Println("GetDeployment: Empty ExternalIPs")
+		}
 
 		result = append(result, response)
 	}
@@ -167,7 +172,9 @@ func GetAllDeployments() []UPCXXResponse {
 
 func DeleteDeployment(name string) error {
 	upcxxClient := createUpcxxClient()
-	// TODO: Test this
 	_, err := upcxxClient.Delete(name, &metav1.DeleteOptions{})
+	if err != nil {
+		fmt.Printf("Error=%s\n", err.Error())
+	}
 	return err
 }

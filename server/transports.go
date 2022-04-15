@@ -9,45 +9,54 @@ import (
 	"github.com/go-kit/kit/endpoint"
 )
 
-type GetComputationRequest struct {
+type GetAllocationRequest struct {
 	Name string `json:"name"`
 }
 
-type GetComputationResponse struct {
-	Computation ComputationAllocationDescription `json:"computation"`
-	Error       string                           `json:"error,omitempty"`
+type GetAllocationResponse struct {
+	Computation AllocationDescription `json:"computation"`
+	Error       string                `json:"error,omitempty"`
 }
 
-type GetAllComputationsRequest struct {
+type GetAllAllocationsRequest struct {
 }
 
-type GetAllComputationsResponse struct {
-	Computations []ComputationAllocationDescription `json:"computations"`
+type GetAllAllocationsResponse struct {
+	Computations []AllocationDescription `json:"computations"`
+	Error        string                  `json:"error,omitempty"`
 }
 
-type PostComputationRequest struct {
+type PostAllocationRequest struct {
 	Name     string `json:"name"`
 	Replicas int32  `json:"replicas"`
 }
 
-type PostComputationResponse struct {
+type PostAllocationResponse struct {
 	Result string `json:"result,omitempty"`
 }
 
-func MakeGetComputationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
+type DeleteAllocationRequest struct {
+	Name string `json:"name"`
+}
+
+type DeleteAllocationResponse struct {
+	Error string `json:"error"`
+}
+
+func MakeGetAllocationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		req := request.(GetComputationRequest)
-		computation, err := svc.GetComputation(req.Name)
+		req := request.(GetAllocationRequest)
+		computation, err := svc.GetAllocation(req.Name)
 		if err != nil {
-			return GetComputationResponse{Error: err.Error()}, nil
+			return GetAllocationResponse{Error: err.Error()}, nil
 		}
 
-		return GetComputationResponse{Computation: computation}, nil
+		return GetAllocationResponse{Computation: computation}, nil
 	}
 }
 
-func DecodeGetComputationRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	req := GetComputationRequest{}
+func DecodeGetAllocationRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	req := GetAllocationRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		return nil, err
 	}
@@ -55,34 +64,55 @@ func DecodeGetComputationRequest(_ context.Context, r *http.Request) (interface{
 	return req, nil
 }
 
-func MakeGetAllComputationsEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
+func MakeGetAllAllocationsEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		return GetAllComputationsResponse{Computations: svc.GetAllComputations()}, nil
+		return GetAllAllocationsResponse{Computations: svc.GetAllAllocations()}, nil
 	}
 }
 
-func DecodeGetAllComputationsRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	return GetAllComputationsRequest{}, nil
+func DecodeGetAllAllocationsRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	return GetAllAllocationsRequest{}, nil
 }
 
-func MakePostComputationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
+func MakePostAllocationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
 	return func(_ context.Context, request interface{}) (interface{}, error) {
-		req := request.(PostComputationRequest)
+		req := request.(PostAllocationRequest)
 		if len(req.Name) == 0 || req.Replicas <= 0 {
 			return nil, fmt.Errorf("Empty computation name=%s or wrong replicas=%d\n", req.Name, req.Replicas)
 		}
 
-		err := svc.PostComputation(ComputationAllocationDescription{Name: req.Name, Replicas: req.Replicas})
+		err := svc.PostAllocation(AllocationDescription{Name: req.Name, Replicas: req.Replicas})
 		if err != nil {
-			return PostComputationResponse{Result: err.Error()}, nil
+			return PostAllocationResponse{Result: err.Error()}, nil
 		}
 
-		return PostComputationResponse{Result: "Allocating"}, nil
+		return PostAllocationResponse{Result: "Allocating"}, nil
 	}
 }
 
-func DecodePostComputationRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	req := PostComputationRequest{}
+func DecodePostAllocationRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	req := PostAllocationRequest{}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+func MakeDeleteAllocationEndpoint(svc ComputationAllocationServiceIfc) endpoint.Endpoint {
+	return func(_ context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteAllocationRequest)
+		err := svc.DeleteAllocation(req.Name)
+		if err != nil {
+			return DeleteAllocationResponse{Error: err.Error()}, nil
+		}
+
+		return DeleteAllocationResponse{}, nil
+	}
+}
+
+func DecodeDeleteAllocationRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	req := DeleteAllocationRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		return nil, err
 	}

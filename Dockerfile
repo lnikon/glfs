@@ -10,7 +10,7 @@ WORKDIR /workspace/glfs
 RUN go mod tidy
 RUN go build ./cmd/glfs
 
-ARG PORT=8090
+ARG PORT=8080
 ENV PORT $PORT
 
 EXPOSE $PORT

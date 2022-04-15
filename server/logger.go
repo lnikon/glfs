@@ -12,7 +12,7 @@ type LoggingMiddleware struct {
 	Logger log.Logger
 }
 
-func (mw LoggingMiddleware) GetComputation(name string) (computation ComputationAllocationDescription, err error) {
+func (mw LoggingMiddleware) GetAllocation(name string) (computation AllocationDescription, err error) {
 	defer func(begin time.Time) {
 		mw.Logger.Log(
 			"method", "GetComputation",
@@ -23,14 +23,14 @@ func (mw LoggingMiddleware) GetComputation(name string) (computation Computation
 		)
 	}(time.Now())
 
-	computation, err = mw.Next.GetComputation(name)
+	computation, err = mw.Next.GetAllocation(name)
 	if err != nil {
 		mw.Logger.Log("Error: ", err.Error())
 	}
 	return
 }
 
-func (mw LoggingMiddleware) GetAllComputations() (output []ComputationAllocationDescription) {
+func (mw LoggingMiddleware) GetAllAllocations() (output []AllocationDescription) {
 	defer func(begin time.Time) {
 		mw.Logger.Log(
 			"method", "GetAllComputations",
@@ -39,11 +39,11 @@ func (mw LoggingMiddleware) GetAllComputations() (output []ComputationAllocation
 		)
 	}(time.Now())
 
-	output = mw.Next.GetAllComputations()
+	output = mw.Next.GetAllAllocations()
 	return
 }
 
-func (mw LoggingMiddleware) PostComputation(description ComputationAllocationDescription) (err error) {
+func (mw LoggingMiddleware) PostAllocation(description AllocationDescription) (err error) {
 	defer func(begin time.Time) {
 		mw.Logger.Log(
 			"method", "PostComputation",
@@ -52,14 +52,14 @@ func (mw LoggingMiddleware) PostComputation(description ComputationAllocationDes
 		)
 	}(time.Now())
 
-	err = mw.Next.PostComputation(description)
+	err = mw.Next.PostAllocation(description)
 	if err != nil {
 		mw.Logger.Log("Error: ", err.Error())
 	}
 	return
 }
 
-func (mw LoggingMiddleware) DeleteComputation(name string) (err error) {
+func (mw LoggingMiddleware) DeleteAllocation(name string) (err error) {
 	defer func(begin time.Time) {
 		mw.Logger.Log(
 			"method", "DeleteComputation",
@@ -68,7 +68,7 @@ func (mw LoggingMiddleware) DeleteComputation(name string) (err error) {
 		)
 	}(time.Now())
 
-	err = mw.Next.DeleteComputation(name)
+	err = mw.Next.DeleteAllocation(name)
 	if err != nil {
 		mw.Logger.Log("Error: ", err.Error())
 	}

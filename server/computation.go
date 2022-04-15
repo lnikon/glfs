@@ -7,25 +7,27 @@ import (
 	glkube "github.com/lnikon/glfs/kube"
 )
 
-type ComputationAllocationDescription struct {
+type AllocationDescription struct {
 	Name     string `json:"name"`
 	Replicas int32  `json:"replicas"`
-	IP       net.IP `json:"ip"`
+
+	// Set in a result of GET request
+	IP net.IP `json:"ip"`
 }
 
 type ComputationAllocation struct {
-	Allocations []ComputationAllocationDescription `json:"allocations"`
+	Allocations []AllocationDescription `json:"allocations"`
 }
 
 type ComputationAllocationServiceIfc interface {
-	GetComputation(name string) (ComputationAllocationDescription, error)
-	GetAllComputations() []ComputationAllocationDescription
-	PostComputation(ComputationAllocationDescription) error
-	DeleteComputation(name string) error
+	GetAllocation(name string) (AllocationDescription, error)
+	GetAllAllocations() []AllocationDescription
+	PostAllocation(AllocationDescription) error
+	DeleteAllocation(name string) error
 }
 
 type ComputationAllocationService struct {
-	computations ComputationAllocation `json:"computations"`
+	allocations ComputationAllocation
 }
 
 func NewComputationService() (ComputationAllocationServiceIfc, error) {
@@ -33,11 +35,24 @@ func NewComputationService() (ComputationAllocationServiceIfc, error) {
 	return computationService, nil
 }
 
-func (c *ComputationAllocationService) GetAllComputations() []ComputationAllocationDescription {
+func (c *ComputationAllocationService) GetAllocation(name string) (AllocationDescription, error) {
+	upcxx := glkube.GetDeployment(name)
+	if upcxx == nil {
+		return AllocationDescription{}, fmt.Errorf("resource does not exists")
+	}
+
+	return AllocationDescription{
+		Name:     upcxx.Name,
+		Replicas: upcxx.Replicas,
+		IP:       upcxx.IP,
+	}, nil
+}
+
+func (c *ComputationAllocationService) GetAllAllocations() []AllocationDescription {
 	upcxxResponse := glkube.GetAllDeployments()
-	descriptions := []ComputationAllocationDescription{}
+	descriptions := []AllocationDescription{}
 	for _, upcxx := range upcxxResponse {
-		descriptions = append(descriptions, ComputationAllocationDescription{
+		descriptions = append(descriptions, AllocationDescription{
 			Name:     upcxx.Name,
 			Replicas: upcxx.Replicas,
 			IP:       upcxx.IP,
@@ -47,29 +62,16 @@ func (c *ComputationAllocationService) GetAllComputations() []ComputationAllocat
 	return descriptions
 }
 
-func (c *ComputationAllocationService) GetComputation(name string) (ComputationAllocationDescription, error) {
-	upcxx := glkube.GetDeployment(name)
-	if upcxx == nil {
-		return ComputationAllocationDescription{}, fmt.Errorf("resource does not exists")
-	}
-
-	return ComputationAllocationDescription{
-		Name:     upcxx.Name,
-		Replicas: upcxx.Replicas,
-		IP:       upcxx.IP,
-	}, nil
-}
-
-func (c *ComputationAllocationService) PostComputation(description ComputationAllocationDescription) error {
+func (c *ComputationAllocationService) PostAllocation(description AllocationDescription) error {
 	upcxxReq := glkube.UPCXXRequest{Name: description.Name, Replicas: description.Replicas}
 	if err := glkube.CreateUPCXX(upcxxReq); err != nil {
 		return err
 	}
 
-	c.computations.Allocations = append(c.computations.Allocations, description)
+	c.allocations.Allocations = append(c.allocations.Allocations, description)
 	return nil
 }
 
-func (c *ComputationAllocationService) DeleteComputation(name string) error {
+func (c *ComputationAllocationService) DeleteAllocation(name string) error {
 	return glkube.DeleteDeployment(name)
 }

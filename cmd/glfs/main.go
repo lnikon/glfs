@@ -12,7 +12,7 @@ import (
 
 const (
 	hostname = ":"
-	port     = "8090"
+	port     = "8080"
 )
 
 func main() {
@@ -25,30 +25,36 @@ func main() {
 		return
 	}
 
-	getAllComputationsHandler := httptransport.NewServer(
-		glserver.MakeGetAllComputationsEndpoint(computationService),
-		glserver.DecodeGetAllComputationsRequest,
+	getAllocationHandler := httptransport.NewServer(
+		glserver.MakeGetAllocationEndpoint(computationService),
+		glserver.DecodeGetAllocationRequest,
 		glserver.EncodeResponse,
 	)
 
-	getComputationHandler := httptransport.NewServer(
-		glserver.MakeGetComputationEndpoint(computationService),
-		glserver.DecodeGetComputationRequest,
+	getAllAllocationsHandler := httptransport.NewServer(
+		glserver.MakeGetAllAllocationsEndpoint(computationService),
+		glserver.DecodeGetAllAllocationsRequest,
 		glserver.EncodeResponse,
 	)
 
-	postComputationHandler := httptransport.NewServer(
-		glserver.MakePostComputationEndpoint(computationService),
-		glserver.DecodePostComputationRequest,
+	postAllocationHandler := httptransport.NewServer(
+		glserver.MakePostAllocationEndpoint(computationService),
+		glserver.DecodePostAllocationRequest,
 		glserver.EncodeResponse,
 	)
 
-	// Do routing staff
+	deleteAllocationHandler := httptransport.NewServer(
+		glserver.MakeDeleteAllocationEndpoint(computationService),
+		glserver.DecodeDeleteAllocationRequest,
+		glserver.EncodeResponse,
+	)
+
 	router := mux.NewRouter()
-	computationRouter := router.PathPrefix("/computation").Subrouter()
-	computationRouter.Methods("GET").Path("/name").Handler(getComputationHandler)
-	computationRouter.Methods("GET").Path("/").Handler(getAllComputationsHandler)
-	computationRouter.Methods("POST").Handler(postComputationHandler)
+	allocationRouter := router.PathPrefix("/allocation").Subrouter()
+	allocationRouter.Methods("GET").Path("/result").Handler(getAllocationHandler)
+	allocationRouter.Methods("GET").Path("/result/all").Handler(getAllAllocationsHandler)
+	allocationRouter.Methods("POST").Handler(postAllocationHandler)
+	allocationRouter.Methods("DELETE").Handler(deleteAllocationHandler)
 
 	// Start to listen for incoming requests
 	// VAGAGTODO: Update logging
